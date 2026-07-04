@@ -1,0 +1,230 @@
+/* ==========================================================================
+   BMA intro preloader (dependency-free port of the GSAP kinetic intro)
+   Choreography: "BLUE MODERN ADVISORY" rises into view, the trailing letters
+   collapse away so the three initials lock into a centered "BMA" serif
+   wordmark, then the overlay splits at the horizontal midline (top half up /
+   bottom half down) to reveal the page. No GSAP, no libraries, no shadows,
+   no gradients, no blur. Colors track the Cool-gallery palette (tokens.css).
+
+   Everything is scoped under .bma-preloader so nothing leaks into the site.
+   The two panels together (top 50vh + bottom 50vh) cover the screen and run
+   the SAME resolve animation in sync, so the seam is invisible until they part.
+   ========================================================================== */
+
+.bma-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  /* transparent: the two paper panels are the only opaque layers, so parting
+     them reveals the page with no leftover full-screen cover. */
+  pointer-events: auto;
+}
+
+/* Fail-safe: if scripting is unavailable, never gate the page behind the
+   overlay. (Paired with a <noscript> style in each page for older engines
+   that don't support the scripting media feature, plus a JS safety timeout.) */
+@media (scripting: none) {
+  .bma-preloader {
+    display: none !important;
+  }
+}
+
+/* Reduced motion: no intro at all. */
+@media (prefers-reduced-motion: reduce) {
+  .bma-preloader {
+    display: none !important;
+  }
+}
+
+/* --- Split panels --------------------------------------------------------- */
+.bma-pl-panel {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: 50vh;
+  overflow: hidden;
+  background-color: var(--paper);
+  transition: transform 0.62s var(--ease);
+  will-change: transform;
+}
+
+.bma-pl-panel--top {
+  top: 0;
+}
+.bma-pl-panel--bottom {
+  bottom: 0;
+}
+
+/* Each panel's inner is a full-viewport, centered stage. The top panel clips
+   it to the top half, the bottom panel to the bottom half; because both are
+   centered at 50vh they line up into one continuous wordmark. */
+.bma-pl-inner {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bma-pl-panel--top .bma-pl-inner {
+  top: 0;
+}
+.bma-pl-panel--bottom .bma-pl-inner {
+  bottom: 0;
+}
+
+/* --- The wordmark --------------------------------------------------------- */
+.bma-pl-mark {
+  display: flex;
+  align-items: flex-start;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--ink);
+  /* min kept low so the full "BLUE MODERN ADVISORY" phrase fits on phones
+     before it resolves to the centered "BMA" lockup. */
+  font-size: clamp(2rem, 8vw, 6rem);
+  line-height: 1.08;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* A word is the rise-mask: its content starts below the mask and slides up. */
+.bma-pl-word {
+  display: inline-flex;
+  overflow: hidden;
+}
+
+/* Word gaps start open ("BLUE MODERN ADVISORY") and tighten into "BMA". */
+.bma-pl-word:not(:last-child) {
+  margin-inline-end: 0.34em;
+  transition: margin-inline-end 0.55s var(--ease);
+}
+
+.bma-pl-rise {
+  display: inline-flex;
+  transform: translateY(118%);
+  transition: transform 0.6s var(--ease);
+  will-change: transform;
+}
+
+/* The initial (B / M / A) stays; the rest of each word collapses to nothing. */
+.bma-pl-i {
+  display: inline-block;
+}
+
+.bma-pl-rest {
+  display: inline-block;
+  overflow: hidden;
+  max-width: 8ch;
+  opacity: 1;
+  transition:
+    max-width 0.55s var(--ease),
+    opacity 0.4s var(--ease);
+}
+
+/* --- Corner tags (IBM Plex Mono, 12px, uppercase, tracked) ---------------- */
+.bma-pl-tags {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bma-pl-tag {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.5s var(--ease),
+    transform 0.5s var(--ease);
+}
+
+.bma-pl-tag--1 {
+  top: 12%;
+  left: 8%;
+}
+.bma-pl-tag--2 {
+  bottom: 14%;
+  left: 8%;
+}
+.bma-pl-tag--3 {
+  bottom: 20%;
+  right: 8%;
+}
+
+@media (max-width: 40rem) {
+  .bma-pl-tag--1 {
+    top: 8%;
+    left: 6%;
+  }
+  .bma-pl-tag--2 {
+    bottom: 10%;
+    left: 6%;
+  }
+  .bma-pl-tag--3 {
+    bottom: 16%;
+    right: 6%;
+  }
+}
+
+/* --- State: 1) letters rise in, tags fade in ------------------------------ */
+.bma-preloader.is-revealed .bma-pl-rise {
+  transform: translateY(0);
+}
+/* Small stagger across the three words on the way in. */
+.bma-preloader.is-revealed .bma-pl-word:nth-child(1) .bma-pl-rise {
+  transition-delay: 0.02s;
+}
+.bma-preloader.is-revealed .bma-pl-word:nth-child(2) .bma-pl-rise {
+  transition-delay: 0.1s;
+}
+.bma-preloader.is-revealed .bma-pl-word:nth-child(3) .bma-pl-rise {
+  transition-delay: 0.18s;
+}
+.bma-preloader.is-revealed .bma-pl-tag--1 {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.25s;
+}
+.bma-preloader.is-revealed .bma-pl-tag--2 {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.33s;
+}
+.bma-preloader.is-revealed .bma-pl-tag--3 {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.41s;
+}
+
+/* --- State: 2) trailing letters collapse -> "BMA" locks up ---------------- */
+.bma-preloader.is-resolved .bma-pl-rest {
+  max-width: 0;
+  opacity: 0;
+}
+.bma-preloader.is-resolved .bma-pl-word:not(:last-child) {
+  margin-inline-end: 0.07em;
+}
+
+/* --- State: 3) tags clear ------------------------------------------------- */
+.bma-preloader.is-lifting .bma-pl-tag {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition-delay: 0s;
+}
+
+/* --- State: 4) panels part to reveal the page ----------------------------- */
+.bma-preloader.is-lifting .bma-pl-panel--top {
+  transform: translateY(-100%);
+}
+.bma-preloader.is-lifting .bma-pl-panel--bottom {
+  transform: translateY(100%);
+}

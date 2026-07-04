@@ -1,0 +1,85 @@
+/* ==========================================================================
+   BMA v3: Design tokens (the regulations)
+   Cool gallery: near-white paper, near-black ink, true greys. No color accents.
+   Accent tokens are repointed to neutrals so existing class rules keep working.
+   ========================================================================== */
+
+:root {
+  /* --- Color ------------------------------------------------------------ */
+  --paper: #fafaf8; /* page background            */
+  --ink: #141414; /* primary text               */
+  --slate: #444444; /* secondary text             */
+  --muted: #6b6b6b; /* meta / captions (WCAG AA on paper/white) */
+  --hairline: #e4e4e1; /* rules, borders             */
+  --surface: #ffffff; /* cards                      */
+
+  /* "Accent" -> neutral ink. A single near-black underline is the only accent. */
+  --teal: #141414; /* underline / accent -> ink  */
+  --teal-deep: #141414; /* accent hover -> ink        */
+  --teal-tint: #f0f0ee; /* accent background -> pale grey */
+
+  --terracotta: #141414; /* primary CTA -> near-black  */
+  --terracotta-deep: #2a2a2a; /* CTA fill / hover pair (white text, AA) */
+
+  --sand: #ededea; /* warm block -> pale grey    */
+  --sand-tint: #f4f4f1; /* warm block, lighter        */
+
+  --navy: #141414; /* logo, footer -> near-black */
+
+  /* Footer neutrals on near-black footer (both clear WCAG AA) */
+  --footer-fg: #d2d2d2; /* footer links / body        */
+  --footer-fg-muted: #9a9a9a; /* footer meta / headings / legal */
+
+  /* --- Typography families --------------------------------------------- */
+  --font-serif: "Aparajita", "Spectral", Georgia, serif;
+  --font-body:
+    "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  --font-mono:
+    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* --- Type scale (px sizes as rem, base 16px) ------------------------- */
+  --fs-display: 3.25rem; /* 52px  */
+  --fs-h1: 2.5rem; /* 40px  */
+  --fs-h2: 1.875rem; /* 30px  */
+  --fs-h3: 1.3125rem; /* 21px  */
+  --fs-body: 1.125rem; /* 18px  */
+  --fs-small: 0.9375rem; /* 15px  */
+  --fs-label: 0.75rem; /* 12px  */
+
+  /* --- Type tracking (letter-spacing) ---------------------------------- */
+  --track-display: -0.025em;
+  --track-h1: -0.02em;
+  --track-h2: -0.01em;
+  --track-label: 0.12em;
+
+  /* --- Line heights ----------------------------------------------------- */
+  --lh-tight: 1.1;
+  --lh-heading: 1.15;
+  --lh-body: 1.65;
+
+  /* --- Spacing (base 8px) ---------------------------------------------- */
+  --space-1: 0.5rem; /* 8px   */
+  --space-2: 1rem; /* 16px  */
+  --space-3: 1.5rem; /* 24px  */
+  --space-4: 2rem; /* 32px  */
+  --space-5: 3rem; /* 48px  */
+  --space-6: 4rem; /* 64px  */
+  --space-7: 6rem; /* 96px  */
+  --space-8: 8rem; /* 128px */
+
+  /* --- Layout ----------------------------------------------------------- */
+  --measure: 720px; /* single centered stream width */
+  --gutter: 1.5rem; /* base side padding            */
+
+  /* --- Radius (no pills) ----------------------------------------------- */
+  --radius-card: 6px;
+  --radius-btn: 4px;
+
+  /* --- Section rhythm --------------------------------------------------- */
+  --section-y: clamp(6rem, 8vw, 8rem); /* 96 -> 128px vertical rhythm */
+
+  /* --- Motion ----------------------------------------------------------- */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --reveal-shift: 8px;
+}
