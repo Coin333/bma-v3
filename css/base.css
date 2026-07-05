@@ -163,6 +163,27 @@ p {
   font-weight: 400;
 }
 
+/* Editorial drop cap: serif initial on a lede that opens a section, like the
+   first letter of a magazine feature. Static, ink, no motion. Sized in em so it
+   tracks the lede's clamp; line-height pulls the cap to align with the first
+   two body lines. Screen readers still read the letter as part of the word. */
+.lede--drop::first-letter {
+  float: left;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  color: var(--ink);
+  font-size: 3.1em;
+  line-height: 0.78;
+  padding: 0.02em 0.12em 0 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+@media (max-width: 480px) {
+  .lede--drop::first-letter {
+    font-size: 2.6em;
+  }
+}
+
 .small {
   font-size: var(--fs-small);
 }

@@ -1,7 +1,24 @@
 {
   "version": 1,
   "note": "Autopilot state. 'consumed' is keyed by zip path relative to ~/Desktop/Awwwards Components. Do not hand-edit while the loop is running.",
-  "iterations": 0,
-  "consumed": {},
-  "added_features": []
+  "iterations": 1,
+  "consumed": {
+    "Awwwards Pack 4/Text Animations/5/code.zip": {
+      "outcome": "integrated",
+      "reason": "On-scroll variable-font typography demo -> de-animated into a static serif drop cap.",
+      "at": "2026-07-04"
+    }
+  },
+  "added_features": [
+    {
+      "iteration": 1,
+      "title": "Editorial drop cap on the About lede",
+      "source_zip": "Awwwards Pack 4/Text Animations/5/code.zip",
+      "page": "about.html",
+      "files": ["about.html", "css/base.css"],
+      "note": "Static serif ::first-letter drop cap (ink, ~2 lines, mobile override at 480px). No motion, no new libs. Verified in Playwright at 1440 + 390: no horizontal scroll, no console errors, no regression on index/capabilities.",
+      "commit": "",
+      "seeded_by": "supervised run"
+    }
+  ]
 }
