@@ -145,7 +145,7 @@ a {
 /* --- Layout: single centered stream --------------------------------------- */
 .container {
   width: 100%;
-  max-width: calc(var(--measure) + var(--gutter) * 2);
+  max-width: none;
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
@@ -460,14 +460,13 @@ html.reveal-ready .reveal.is-visible .accent-underline::after {
   display: inline-flex;
   width: 2.4rem;
   height: 2.4rem;
-  border: 1px solid var(--hairline);
   border-radius: 999px;
-  transition:
-    border-color 0.3s var(--ease),
-    background-color 0.3s var(--ease);
+  background-color: transparent;
+  /* No resting box; a light shade fades in on hover, smoothly. */
+  transition: background-color 0.3s var(--ease);
 }
 .menu-toggle:hover .menu-burger {
-  border-color: var(--ink);
+  background-color: var(--sand-tint);
 }
 .menu-burger span {
   position: absolute;
@@ -557,15 +556,9 @@ html.reveal-ready .reveal.is-visible .accent-underline::after {
   gap: clamp(0.75rem, 3vw, 1.5rem);
   counter-increment: menu-index;
 }
+/* Menu index numbers removed per request. */
 .site-menu-link::before {
-  content: counter(menu-index, decimal-leading-zero);
-  flex: 0 0 auto;
-  font-family: var(--font-mono);
-  font-size: var(--fs-label);
-  font-weight: 500;
-  letter-spacing: var(--track-label);
-  line-height: 1;
-  color: var(--muted);
+  content: none;
 }
 .site-menu-link .reveal-mask {
   flex: 1 1 auto;
@@ -593,25 +586,31 @@ html.reveal-ready .reveal.is-visible .accent-underline::after {
 .roll {
   position: relative;
   display: inline-block;
+  overflow: hidden;
   font-family: var(--font-serif);
   font-size: clamp(2.75rem, 8vw, 4.5rem);
   line-height: 1.06;
   letter-spacing: -0.02em;
-  /* Rest at a light shade; full ink shades in smoothly on hover/focus. This
-     replaces the old vertical roll swap, which read as blocky. */
-  color: var(--slate);
-  transition: color 0.35s var(--ease);
+  color: var(--ink);
 }
 .roll span {
   display: block;
+  transition: transform 0.55s var(--ease-hop);
 }
-/* The duplicate word existed only for the roll swap -- not needed for a shade. */
 .roll span:nth-child(2) {
-  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--muted);
+  transform: translateY(100%);
 }
-.roll:hover,
-.roll:focus-visible {
-  color: var(--ink);
+.roll:hover span:nth-child(1),
+.roll:focus-visible span:nth-child(1) {
+  transform: translateY(-100%);
+}
+.roll:hover span:nth-child(2),
+.roll:focus-visible span:nth-child(2) {
+  transform: translateY(0);
 }
 .roll:focus-visible {
   outline: none;
@@ -653,7 +652,6 @@ html.menu-open {
   .site-menu,
   .site-menu-inner,
   .site-menu-link .roll-outer,
-  .roll,
   .roll span,
   .menu-toggle-label span,
   .menu-burger span {
@@ -1112,10 +1110,14 @@ html.reveal-ready .reveal {
   transform: none;
 }
 html.reveal-ready .reveal .r-line {
-  transform: translateY(22px);
-  transition: transform 0.85s var(--ease-spring);
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.7s var(--ease-spring),
+    transform 0.9s var(--ease-spring);
 }
 html.reveal-ready .reveal.is-visible .r-line {
+  opacity: 1;
   transform: none;
 }
 

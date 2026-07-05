@@ -69,7 +69,7 @@
   --space-8: 8rem; /* 128px */
 
   /* --- Layout ----------------------------------------------------------- */
-  --measure: 720px; /* single centered stream width */
+  --measure: 1400px; /* content stream width (widened for full-bleed layout) */
   --gutter: 1.5rem; /* base side padding            */
 
   /* --- Radius (no pills) ----------------------------------------------- */
