@@ -339,6 +339,7 @@ p {
   gap: 0.7rem;
   padding: 0.35rem 0.15rem 0.35rem 0.5rem;
   background: none;
+  border: none;
   color: var(--ink);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
