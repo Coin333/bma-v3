@@ -371,7 +371,7 @@ p {
   line-height: 1;
   white-space: nowrap;
   /* Serif metrics sit low under line-height:1; lift to the logo's optical center. */
-  transform: translateY(-2px);
+  transform: translateY(1px);
 }
 
 /* Menu toggle: label + burger, top-right */
