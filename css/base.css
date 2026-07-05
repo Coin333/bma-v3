@@ -643,9 +643,10 @@ html.menu-open {
   border-top: 1px solid var(--hairline);
 }
 
-/* Section heading block: eyebrow + heading + optional intro */
+/* Section heading block: eyebrow + heading + optional intro (centered) */
 .section-head {
   margin-bottom: var(--space-5);
+  text-align: center;
 }
 .section-head .eyebrow {
   margin-bottom: var(--space-2);
@@ -660,13 +661,14 @@ html.menu-open {
   line-height: 1.6;
   color: var(--slate);
   max-width: 60ch;
+  margin-inline: auto; /* keep the reading measure but center it under the head */
 }
 
 /* --- Hero ----------------------------------------------------------------- */
 .hero {
   padding-top: clamp(3.5rem, 7vw, 6rem);
   padding-bottom: clamp(3rem, 6vw, 5rem);
-  text-align: left;
+  text-align: center;
 }
 
 .hero .eyebrow {
@@ -682,6 +684,7 @@ html.menu-open {
   line-height: 1.55;
   color: var(--slate);
   max-width: 54ch;
+  margin-inline: auto; /* center the width-capped subhead under the headline */
   margin-bottom: var(--space-4);
 }
 
@@ -689,6 +692,7 @@ html.menu-open {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: var(--space-3);
 }
 
@@ -911,7 +915,7 @@ html.menu-open {
   border-top: 1px solid var(--hairline);
   padding-top: var(--section-y);
   padding-bottom: var(--section-y);
-  text-align: left;
+  text-align: center;
 }
 
 .cta-close .eyebrow {
@@ -922,6 +926,7 @@ html.menu-open {
 .cta-close .h2 {
   margin-bottom: var(--space-3);
   max-width: 20ch;
+  margin-inline: auto;
 }
 
 .cta-close p {
@@ -929,6 +934,7 @@ html.menu-open {
   line-height: 1.6;
   color: var(--slate);
   max-width: 52ch;
+  margin-inline: auto;
   margin-bottom: var(--space-4);
 }
 
