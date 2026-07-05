@@ -41,8 +41,14 @@
       }
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
-      // Scroll is unlocked now: let site.js start Lenis smooth scroll.
+      // Whenever the overlay clears, tell site.js to reveal the page NOW. This
+      // is what makes in-session navigation (intro skipped) reveal instantly:
+      // the skip path never runs start()'s 3100ms `bma:intro-reveal`, so without
+      // this the page would sit hidden until site.js's 7s fail-safe. On the
+      // normal play path intro-reveal already fired at 3100ms, so this re-fire
+      // is a guarded no-op. intro-done then starts Lenis smooth scroll.
       try {
+        document.dispatchEvent(new CustomEvent("bma:intro-reveal"));
         document.dispatchEvent(new CustomEvent("bma:intro-done"));
       } catch (e2) {
         /* site.js has a timeout fail-safe */
