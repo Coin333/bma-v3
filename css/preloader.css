@@ -237,12 +237,18 @@
   transition-delay: 0s;
 }
 
-/* --- State: 4) panels part to reveal the page ----------------------------- */
-.bma-preloader.is-lifting .bma-pl-panel--top {
-  transform: translateY(-100%);
+/* --- State: 4) fade the whole overlay out (was: panels part open) --------- */
+.bma-preloader {
+  transition: opacity 0.6s var(--ease);
 }
+.bma-preloader.is-lifting {
+  opacity: 0;
+  pointer-events: none;
+}
+/* Panels stay put; the overlay simply fades rather than splitting apart. */
+.bma-preloader.is-lifting .bma-pl-panel--top,
 .bma-preloader.is-lifting .bma-pl-panel--bottom {
-  transform: translateY(100%);
+  transform: none;
 }
 
 /* The page's content reveal (text rising in) is handled by the scroll-reveal

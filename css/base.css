@@ -781,6 +781,17 @@ html.menu-open {
   grid-column: 1;
 }
 
+/* Whole-list variant with the index numbers removed (body spans full width). */
+.quiet-list--nonum > li {
+  grid-template-columns: 1fr;
+}
+.quiet-list--nonum .qi-index {
+  display: none;
+}
+.quiet-list--nonum .qi-body {
+  grid-column: 1;
+}
+
 .quiet-list .qi-name {
   font-family: var(--font-body);
   font-size: 1.1875rem;
