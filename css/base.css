@@ -257,43 +257,6 @@ p {
   color: var(--muted);
 }
 
-/* Ink underline on a single word inside a heading. A hairline pseudo-element
-   replaces text-decoration so it can draw in (scaleX 0 -> 1) once its
-   containing .reveal section becomes visible. Default (no JS / no reveal
-   wiring) is fully drawn -- only reveal-ready + not-yet-visible hides it.
-   Assumes the word never wraps (true for all current usages). */
-.accent-underline {
-  position: relative;
-  color: inherit;
-}
-.accent-underline::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -0.12em;
-  height: 2px;
-  background-color: var(--ink);
-  transform: scaleX(1);
-  transform-origin: left center;
-}
-
-/* JS + reveal wired up: hide until the section is visible, then draw in once. */
-html.reveal-ready .reveal .accent-underline::after {
-  transform: scaleX(0);
-  transition: transform 0.6s var(--ease);
-}
-html.reveal-ready .reveal.is-visible .accent-underline::after {
-  transform: scaleX(1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .accent-underline::after {
-    transform: scaleX(1) !important;
-    transition: none !important;
-  }
-}
-
 /* Text emphasis in ink (sparing) */
 .text-teal {
   color: var(--teal);
