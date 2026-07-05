@@ -212,6 +212,16 @@ p {
   font-weight: 400;
 }
 
+/* A drop cap only works in left-aligned text: the floated initial must anchor
+   to a real left margin. Inside a centered .hero it would float to the far edge
+   while the copy centers around it, so the drop-cap lede is always left-aligned
+   and set on a centered reading column under the headline. */
+.lede--drop {
+  text-align: left;
+  max-width: 68ch;
+  margin-inline: auto;
+}
+
 /* Editorial drop cap: serif initial on a lede that opens a section, like the
    first letter of a magazine feature. Static, ink, no motion. Sized in em so it
    tracks the lede's clamp; line-height pulls the cap to align with the first
