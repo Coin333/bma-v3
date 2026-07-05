@@ -341,16 +341,18 @@ p {
 }
 
 .nav {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* empty | centered brand | menu (right) */
   align-items: center;
-  justify-content: space-between;
   gap: 1.5rem;
   min-height: 68px;
   padding-block: 0.75rem;
 }
 
-/* Brand: logo + name, top-left */
+/* Brand: logo + name, centered in the bar */
 .nav-brand {
+  grid-column: 2;
+  justify-self: center;
   display: inline-flex;
   align-items: center;
   gap: 0.72rem;
@@ -374,6 +376,8 @@ p {
 
 /* Menu toggle: label + burger, top-right */
 .menu-toggle {
+  grid-column: 3;
+  justify-self: end;
   display: inline-flex;
   align-items: center;
   gap: 0.7rem;
