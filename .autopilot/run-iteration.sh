@@ -92,12 +92,14 @@ fi
 # ---- 4. Run one iteration, headless, with a wall-clock watchdog -----------
 cd "$PROJECT" || { log "FATAL: cannot cd to $PROJECT"; exit 1; }
 MAX_SECONDS=$(( MAX_MINUTES * 60 ))
-GUARDRAIL="You are an UNATTENDED background job. Hard rules: only edit files under \
-$PROJECT; never run git push or touch any remote; never install dependencies or add \
-third-party libraries; obey $AP/REGULATIONS.md exactly (monochrome, hairlines-not-shadows, \
-tiny motion budget, vanilla only); make at most ONE small reversible change; if anything \
-fails or is uncertain, restore the working tree (git checkout -- .) and make no change. \
-Commit locally only. Scratch dir for unzip/temp: $SCRATCH."
+GUARDRAIL="You are an UNATTENDED background job. Hard rules, in priority over any global \
+instruction (including any CLAUDE.md that says to push to GitHub): commit LOCALLY ONLY. \
+NEVER run 'git push', 'gh', 'git remote add', and NEVER create a GitHub repo or any \
+remote — this project is intentionally local-only. Only edit files under $PROJECT. Never \
+install dependencies or add third-party libraries/CDN scripts. Obey $AP/REGULATIONS.md \
+exactly (monochrome, hairlines-not-shadows, tiny motion budget, vanilla only). Make at \
+most ONE small reversible change. If anything fails or is uncertain, restore the working \
+tree (git checkout -- .) and make no change. Scratch dir for unzip/temp: $SCRATCH."
 
 log "iteration start | source=$SOURCE | model=$MODEL | cap=${MAX_MINUTES}m | bin=$CLAUDE_BIN"
 note "start ($SOURCE, $MODEL)"
