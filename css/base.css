@@ -390,18 +390,18 @@ html.reveal-ready .reveal.is-visible .accent-underline::after {
 .nav-brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.72rem;
   flex-shrink: 0;
 }
 
 .nav-brand img {
   width: auto;
-  height: 28px;
+  height: 34px;
 }
 
 .nav-brand .wordmark {
   font-family: var(--font-serif);
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   font-weight: 400;
   letter-spacing: -0.01em;
   color: var(--navy);
@@ -593,31 +593,25 @@ html.reveal-ready .reveal.is-visible .accent-underline::after {
 .roll {
   position: relative;
   display: inline-block;
-  overflow: hidden;
   font-family: var(--font-serif);
   font-size: clamp(2.75rem, 8vw, 4.5rem);
   line-height: 1.06;
   letter-spacing: -0.02em;
-  color: var(--ink);
+  /* Rest at a light shade; full ink shades in smoothly on hover/focus. This
+     replaces the old vertical roll swap, which read as blocky. */
+  color: var(--slate);
+  transition: color 0.35s var(--ease);
 }
 .roll span {
   display: block;
-  transition: transform 0.55s var(--ease-hop);
 }
+/* The duplicate word existed only for the roll swap -- not needed for a shade. */
 .roll span:nth-child(2) {
-  position: absolute;
-  top: 0;
-  left: 0;
-  color: var(--muted);
-  transform: translateY(100%);
+  display: none;
 }
-.roll:hover span:nth-child(1),
-.roll:focus-visible span:nth-child(1) {
-  transform: translateY(-100%);
-}
-.roll:hover span:nth-child(2),
-.roll:focus-visible span:nth-child(2) {
-  transform: translateY(0);
+.roll:hover,
+.roll:focus-visible {
+  color: var(--ink);
 }
 .roll:focus-visible {
   outline: none;
@@ -659,6 +653,7 @@ html.menu-open {
   .site-menu,
   .site-menu-inner,
   .site-menu-link .roll-outer,
+  .roll,
   .roll span,
   .menu-toggle-label span,
   .menu-burger span {
