@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "note": "Autopilot state. 'consumed' is keyed by zip path relative to ~/Desktop/Awwwards Components. Do not hand-edit while the loop is running.",
+  "iterations": 0,
+  "consumed": {},
+  "added_features": []
+}
