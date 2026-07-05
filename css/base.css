@@ -721,6 +721,13 @@ html.menu-open {
   align-items: baseline;
   padding-block: var(--space-3);
   border-bottom: 1px solid var(--hairline);
+  transition: background-color 0.3s var(--ease);
+}
+
+/* Whole-row hover: a faint warm wash; the index + body ease to the right. */
+.quiet-list > li:hover,
+.quiet-list > li:focus-within {
+  background-color: var(--sand-tint);
 }
 
 /* Optional mono index (01, 02...). Quiet at rest (muted), darkens to ink on
@@ -733,7 +740,13 @@ html.menu-open {
   letter-spacing: var(--track-label);
   color: var(--muted);
   padding-top: 0.35em;
-  transition: color 0.15s var(--ease);
+  transition:
+    color 0.15s var(--ease),
+    transform 0.3s var(--ease);
+}
+
+.quiet-list .qi-body {
+  transition: transform 0.3s var(--ease);
 }
 
 .quiet-list > li:hover .qi-index,
@@ -741,9 +754,23 @@ html.menu-open {
   color: var(--ink);
 }
 
+.quiet-list > li:hover .qi-index,
+.quiet-list > li:hover .qi-body,
+.quiet-list > li:focus-within .qi-index,
+.quiet-list > li:focus-within .qi-body {
+  transform: translateX(6px);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .quiet-list .qi-index {
-    transition: none;
+  .quiet-list .qi-index,
+  .quiet-list .qi-body {
+    transition: color 0.15s var(--ease);
+  }
+  .quiet-list > li:hover .qi-index,
+  .quiet-list > li:hover .qi-body,
+  .quiet-list > li:focus-within .qi-index,
+  .quiet-list > li:focus-within .qi-body {
+    transform: none;
   }
 }
 
@@ -805,6 +832,25 @@ html.menu-open {
   border: 1px solid var(--hairline);
   border-radius: var(--radius-card);
   padding: var(--space-4);
+  transition:
+    border-color 0.3s var(--ease),
+    transform 0.3s var(--ease);
+}
+
+/* Hover: the hairline darkens and the card lifts a touch. No shadow (design law). */
+.hairline-card:hover {
+  border-color: #cbcbc7; /* fallback for no color-mix support */
+  border-color: color-mix(in srgb, var(--ink) 24%, transparent);
+  transform: translateY(-4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hairline-card {
+    transition: border-color 0.3s var(--ease);
+  }
+  .hairline-card:hover {
+    transform: none;
+  }
 }
 
 /* Card grid for engagements (hairline columns, not glass) */
@@ -898,28 +944,87 @@ html.menu-open {
   padding: var(--space-4);
 }
 
-/* --- FAQ (quiet hairline-divided Q&A) ------------------------------------- */
+/* --- FAQ (accordion: minimalist +/- toggle, no circle) -------------------- */
 .faq-list {
   border-top: 1px solid var(--hairline);
 }
 
 .faq-list > li {
-  padding-block: var(--space-3);
   border-bottom: 1px solid var(--hairline);
 }
 
+/* <summary> is the clickable question; strip the native disclosure marker. */
 .faq-list .faq-q {
+  list-style: none;
+  position: relative;
+  padding: var(--space-3) 2.75rem var(--space-3) 0;
   font-family: var(--font-body);
   font-size: 1.1875rem;
   font-weight: 600;
   color: var(--ink);
-  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+.faq-list .faq-q::-webkit-details-marker {
+  display: none;
+}
+.faq-list .faq-q:hover,
+.faq-item[open] > .faq-q {
+  color: var(--slate);
+}
+
+/* +/- built from two hairline bars (no circle). The vertical bar rotates onto
+   the horizontal one, morphing the plus into a minus when the item is open. */
+.faq-list .faq-q::before,
+.faq-list .faq-q::after {
+  content: "";
+  position: absolute;
+  right: 0.35rem;
+  top: calc(var(--space-3) + 0.62em);
+  width: 14px;
+  height: 1.5px;
+  background-color: var(--ink);
+  transition: transform 0.3s var(--ease);
+}
+.faq-list .faq-q::before {
+  transform: translateY(-50%);
+}
+.faq-list .faq-q::after {
+  transform: translateY(-50%) rotate(90deg);
+}
+.faq-item[open] > .faq-q::after {
+  transform: translateY(-50%) rotate(0deg);
 }
 
 .faq-list .faq-a {
+  margin: 0 2.75rem var(--space-3) 0;
   font-size: 1.0625rem;
   line-height: 1.6;
   color: var(--slate);
+}
+
+/* Smooth height expand where supported; instant (still functional) elsewhere. */
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+  .faq-item::details-content {
+    height: 0;
+    overflow: hidden;
+    transition:
+      height 0.35s var(--ease),
+      content-visibility 0.35s allow-discrete;
+  }
+  .faq-item[open]::details-content {
+    height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-list .faq-q::before,
+  .faq-list .faq-q::after,
+  .faq-item::details-content {
+    transition: none;
+  }
 }
 
 /* --- Closing CTA block ---------------------------------------------------- */

@@ -75,7 +75,7 @@
   // Text-line elements. Container-ish tags are excluded; buttons are left out
   // so their own hover transitions are never overridden by the reveal delay.
   var LINE_SEL =
-    "h1,h2,h3,h4,h5,p,li,blockquote,figcaption,.label,.proof-claim,.qi-meta";
+    "h1,h2,h3,h4,h5,p,li,blockquote,figcaption,.label,.proof-claim,.qi-meta,.faq-q";
   var reveals = document.querySelectorAll(".reveal");
   var revealStarted = false;
 
