@@ -93,6 +93,55 @@ a {
   }
 }
 
+/* --- View transition crossfade (page-to-page, CSS-only) -------------------
+   No-ops in browsers without cross-document view transitions. Reduced motion
+   disables the generated pseudo-element animations but keeps the swap instant. */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* --- Scroll progress bar (top, very faint, scroll-linked only) ------------
+   Pure CSS scroll-driven animation. Where animation-timeline is unsupported,
+   the bar simply never leaves scaleX(0) -> invisible, no JS fallback needed.
+   Scroll-linked (not autoplay), so it stays enabled under reduced motion. */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: rgba(20, 20, 20, 0.18); /* fallback for no color-mix support */
+  background: color-mix(in srgb, var(--ink) 20%, transparent);
+  z-index: 150; /* above .site-header (100), below focused .skip-link (200) */
+  pointer-events: none;
+}
+
+@supports (animation-timeline: scroll(root)) {
+  .scroll-progress {
+    animation: bma-scrollbar linear;
+    animation-timeline: scroll(root);
+  }
+}
+
+@keyframes bma-scrollbar {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 /* --- Layout: single centered stream --------------------------------------- */
 .container {
   width: 100%;
@@ -208,13 +257,41 @@ p {
   color: var(--muted);
 }
 
-/* Ink underline on a single word inside a heading */
+/* Ink underline on a single word inside a heading. A hairline pseudo-element
+   replaces text-decoration so it can draw in (scaleX 0 -> 1) once its
+   containing .reveal section becomes visible. Default (no JS / no reveal
+   wiring) is fully drawn -- only reveal-ready + not-yet-visible hides it.
+   Assumes the word never wraps (true for all current usages). */
 .accent-underline {
+  position: relative;
   color: inherit;
-  text-decoration: underline;
-  text-decoration-color: var(--teal);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 6px;
+}
+.accent-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.12em;
+  height: 2px;
+  background-color: var(--ink);
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* JS + reveal wired up: hide until the section is visible, then draw in once. */
+html.reveal-ready .reveal .accent-underline::after {
+  transform: scaleX(0);
+  transition: transform 0.6s var(--ease);
+}
+html.reveal-ready .reveal.is-visible .accent-underline::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accent-underline::after {
+    transform: scaleX(1) !important;
+    transition: none !important;
+  }
 }
 
 /* Text emphasis in ink (sparing) */
@@ -469,8 +546,30 @@ p {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  counter-reset: menu-index;
+}
+/* Mono index number (01/02/03), pure CSS counter -- no motion, no markup
+   changes. Row becomes a flex line so the number sits cleanly to the left of
+   the roll link without touching its own hover/reveal mechanics. */
+.site-menu-link {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 3vw, 1.5rem);
+  counter-increment: menu-index;
+}
+.site-menu-link::before {
+  content: counter(menu-index, decimal-leading-zero);
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--track-label);
+  line-height: 1;
+  color: var(--muted);
 }
 .site-menu-link .reveal-mask {
+  flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
   padding-block: 0.08em;
 }
@@ -652,14 +751,28 @@ html.menu-open {
   border-bottom: 1px solid var(--hairline);
 }
 
-/* Optional mono index (01, 02...) */
+/* Optional mono index (01, 02...). Quiet at rest (muted), darkens to ink on
+   row hover/focus -- the row is not a link, so no underline is added; a
+   subtle darken is the whole affordance. */
 .quiet-list .qi-index {
   font-family: var(--font-mono);
   font-size: var(--fs-label);
   font-weight: 500;
   letter-spacing: var(--track-label);
-  color: var(--teal-deep);
+  color: var(--muted);
   padding-top: 0.35em;
+  transition: color 0.15s var(--ease);
+}
+
+.quiet-list > li:hover .qi-index,
+.quiet-list > li:focus-within .qi-index {
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiet-list .qi-index {
+    transition: none;
+  }
 }
 
 .quiet-list .qi-body {
