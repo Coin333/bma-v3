@@ -81,5 +81,10 @@
 
   /* --- Motion ----------------------------------------------------------- */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* Text rise-in: fast out, long smooth settle (ease-out-expo). Reads as a
+     spring without the dated bounce/overshoot. */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Menu open/close + line reveals: a deliberate ease-in-out with weight. */
+  --ease-hop: cubic-bezier(0.87, 0, 0.13, 1);
   --reveal-shift: 8px;
 }

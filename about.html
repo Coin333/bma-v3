@@ -20,6 +20,11 @@
   <style>
     .reveal { opacity: 1; transform: none; }
     .bma-preloader { display: none !important; }
+    /* No JS: show the menu as a static block and hide the dead toggle. */
+    .menu-toggle { display: none; }
+    .site-menu { position: static; clip-path: none; pointer-events: auto; }
+    .site-menu-inner { transform: none; opacity: 1; padding: 2rem var(--gutter); }
+    .site-menu-link .roll-outer { transform: none; }
   </style>
 </noscript>
 
@@ -42,6 +47,7 @@
 <meta name="twitter:image" content="assets/bmalogo.png" />
 
 <!-- Site JS: nav hairline + reveal on scroll only -->
+<script src="js/vendor/lenis.min.js" defer></script>
 <script src="js/site.js" defer></script>
 
 <!-- BMA intro preloader overlay (dependency-free; see css/preloader.css + js/preloader.js) -->
@@ -79,17 +85,35 @@
         <img src="assets/bmalogo.png" alt="" width="28" height="28" />
         <span class="wordmark">Blue Modern Advisory</span>
       </a>
-      <div class="nav-links">
-        <a class="nav-link" href="index.html">Home</a>
-        <a class="nav-link" href="capabilities.html">Capabilities</a>
-        <a class="nav-link" href="about.html" aria-current="page">About</a>
-      </div>
-      <div class="nav-cta">
-        <a class="btn-primary" href="https://calendly.com/bluemodernadvisory/30min" target="_blank" rel="noopener">Book a Call</a>
-      </div>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open menu">
+        <span class="menu-toggle-label"><span>Menu</span><span aria-hidden="true">Close</span></span>
+        <span class="menu-burger" aria-hidden="true"><span></span><span></span></span>
+      </button>
     </nav>
   </div>
 </header>
+
+<!-- Full-screen menu overlay (paper). JS manages inert/aria-hidden; degrades
+     to a static link list with no JS (see the <noscript> style). -->
+<div class="site-menu" id="site-menu">
+  <div class="site-menu-inner">
+    <p class="site-menu-eyebrow label">Menu</p>
+    <nav class="site-menu-nav" aria-label="Primary">
+      <ul class="site-menu-links">
+        <li class="site-menu-link"><div class="reveal-mask"><div class="roll-outer"><a class="roll" href="index.html"><span>Home</span><span aria-hidden="true">Home</span></a></div></div></li>
+        <li class="site-menu-link"><div class="reveal-mask"><div class="roll-outer"><a class="roll" href="capabilities.html"><span>Capabilities</span><span aria-hidden="true">Capabilities</span></a></div></div></li>
+        <li class="site-menu-link"><div class="reveal-mask"><div class="roll-outer"><a class="roll" href="about.html" aria-current="page"><span>About</span><span aria-hidden="true">About</span></a></div></div></li>
+      </ul>
+    </nav>
+    <div class="site-menu-foot">
+      <a class="btn-primary" href="https://calendly.com/bluemodernadvisory/30min" target="_blank" rel="noopener">Book a Call</a>
+      <div class="site-menu-contact">
+        <span class="label">Get in touch</span>
+        <a href="mailto:reem@bluemodernadvisory.com">reem@bluemodernadvisory.com</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <main id="main-content">
 

@@ -31,6 +31,10 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-behavior: smooth;
+  /* Always reserve the scrollbar gutter so the intro's scroll-lock
+     (overflow:hidden, then released) never changes layout width. Without
+     this the sticky nav jogs sideways the instant the overlay clears. */
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -259,7 +263,7 @@ p {
   border-bottom-color: var(--teal);
 }
 
-/* --- Site header / flat full-width nav ------------------------------------ */
+/* --- Site header / minimalist bar ----------------------------------------- */
 .site-header {
   position: sticky;
   top: 0;
@@ -284,6 +288,7 @@ p {
   padding-block: 0.75rem;
 }
 
+/* Brand: logo + name, top-left */
 .nav-brand {
   display: inline-flex;
   align-items: center;
@@ -306,61 +311,244 @@ p {
   white-space: nowrap;
 }
 
-.nav-links {
-  display: flex;
+/* Menu toggle: label + burger, top-right */
+.menu-toggle {
+  display: inline-flex;
   align-items: center;
-  gap: 1.75rem;
-}
-
-.nav-link {
-  font-family: var(--font-body);
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--slate);
-  line-height: 1;
-  padding-block: 0.25rem;
-  border-bottom: 1.5px solid transparent;
-  transition:
-    color 0.18s var(--ease),
-    border-color 0.18s var(--ease);
-}
-
-.nav-link:hover,
-.nav-link[aria-current="page"] {
+  gap: 0.7rem;
+  padding: 0.35rem 0.15rem 0.35rem 0.5rem;
+  background: none;
   color: var(--ink);
-  border-bottom-color: var(--teal);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.menu-toggle:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
-.nav-cta {
-  flex-shrink: 0;
+.menu-toggle-label {
+  /* Grid-stack both words in one cell so the box sizes to the WIDER word
+     ("Close"), never clipping it, while overflow masks the vertical roll. */
+  display: grid;
+  overflow: hidden;
+  height: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  line-height: 0.85rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.menu-toggle-label span {
+  grid-area: 1 / 1;
+  transition: transform 0.55s var(--ease-hop);
+}
+.menu-toggle-label span:nth-child(2) {
+  transform: translateY(100%);
+}
+.menu-toggle[aria-expanded="true"] .menu-toggle-label span:nth-child(1) {
+  transform: translateY(-100%);
+}
+.menu-toggle[aria-expanded="true"] .menu-toggle-label span:nth-child(2) {
+  transform: translateY(0);
 }
 
-/* Compact nav: keep every link reachable. Drop the wordmark and tighten the
-   row so it never overflows; wrap as a safety net at the smallest widths so
-   there is no horizontal scroll (no hamburger, no floating pill). */
-@media (max-width: 767px) {
-  .nav {
-    flex-wrap: wrap;
-    row-gap: 0.5rem;
-  }
+/* Burger in a hairline circle -> morphs to an X when open */
+.menu-burger {
+  position: relative;
+  display: inline-flex;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  transition:
+    border-color 0.3s var(--ease),
+    background-color 0.3s var(--ease);
+}
+.menu-toggle:hover .menu-burger {
+  border-color: var(--ink);
+}
+.menu-burger span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 15px;
+  height: 1.4px;
+  background-color: var(--ink);
+  transform-origin: center;
+  transition: transform 0.5s var(--ease-hop);
+}
+.menu-burger span:nth-child(1) {
+  transform: translate(-50%, -3px);
+}
+.menu-burger span:nth-child(2) {
+  transform: translate(-50%, 3px);
+}
+.menu-toggle[aria-expanded="true"] .menu-burger span:nth-child(1) {
+  transform: translate(-50%, 0) rotate(45deg);
+}
+.menu-toggle[aria-expanded="true"] .menu-burger span:nth-child(2) {
+  transform: translate(-50%, 0) rotate(-45deg);
+}
+
+@media (max-width: 480px) {
   .nav-brand .wordmark {
     display: none;
   }
-  .nav-links {
-    gap: 1.25rem;
-  }
-  .btn-primary {
-    padding: 0.625rem 1rem;
-    font-size: 0.9375rem;
-  }
 }
 
-@media (max-width: 420px) {
-  .nav-links {
-    gap: 0.875rem;
+/* --- Full-screen menu overlay (paper) ------------------------------------- */
+/* z below the header so the logo + toggle stay on top and clickable to close.
+   Closed = clipped away from the bottom; open = revealed top-to-bottom. */
+.site-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background-color: var(--paper);
+  clip-path: inset(0 0 100% 0);
+  pointer-events: none;
+  transition: clip-path 0.9s var(--ease-hop);
+  will-change: clip-path;
+}
+.site-menu.is-open {
+  clip-path: inset(0 0 0% 0);
+  pointer-events: auto;
+}
+
+.site-menu-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(2.5rem, 6vh, 5rem);
+  min-height: 100%;
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: calc(68px + 8vh) var(--gutter) 8vh;
+  transform: translateY(-6%);
+  opacity: 0;
+  transition:
+    transform 0.9s var(--ease-hop),
+    opacity 0.5s var(--ease);
+}
+.site-menu.is-open .site-menu-inner {
+  transform: none;
+  opacity: 1;
+}
+
+.site-menu-eyebrow {
+  color: var(--muted);
+}
+
+/* Big serif links with a masked line-reveal on open + a roll on hover */
+.site-menu-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.site-menu-link .reveal-mask {
+  overflow: hidden;
+  padding-block: 0.08em;
+}
+.site-menu-link .roll-outer {
+  transform: translateY(120%);
+  transition: transform 0.85s var(--ease-hop);
+}
+.site-menu.is-open .site-menu-link:nth-child(1) .roll-outer {
+  transition-delay: 0.12s;
+}
+.site-menu.is-open .site-menu-link:nth-child(2) .roll-outer {
+  transition-delay: 0.19s;
+}
+.site-menu.is-open .site-menu-link:nth-child(3) .roll-outer {
+  transition-delay: 0.26s;
+}
+.site-menu.is-open .site-menu-link .roll-outer {
+  transform: none;
+}
+
+.roll {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  font-family: var(--font-serif);
+  font-size: clamp(2.75rem, 8vw, 4.5rem);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.roll span {
+  display: block;
+  transition: transform 0.55s var(--ease-hop);
+}
+.roll span:nth-child(2) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--muted);
+  transform: translateY(100%);
+}
+.roll:hover span:nth-child(1),
+.roll:focus-visible span:nth-child(1) {
+  transform: translateY(-100%);
+}
+.roll:hover span:nth-child(2),
+.roll:focus-visible span:nth-child(2) {
+  transform: translateY(0);
+}
+.roll:focus-visible {
+  outline: none;
+}
+
+/* Foot: CTA + contact, hairline-topped */
+.site-menu-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-top: clamp(1.5rem, 4vh, 2.5rem);
+  border-top: 1px solid var(--hairline);
+}
+.site-menu-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: var(--fs-small);
+}
+.site-menu-contact .label {
+  color: var(--muted);
+}
+.site-menu-contact a {
+  color: var(--slate);
+  transition: color 0.18s var(--ease);
+}
+.site-menu-contact a:hover {
+  color: var(--ink);
+}
+
+/* Lock the page scroll while the menu is open (gutter is reserved site-wide). */
+html.menu-open {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-menu,
+  .site-menu-inner,
+  .site-menu-link .roll-outer,
+  .roll span,
+  .menu-toggle-label span,
+  .menu-burger span {
+    transition: none;
   }
-  .nav-link {
-    font-size: 0.875rem;
+  .site-menu-inner,
+  .site-menu-link .roll-outer {
+    transform: none;
+  }
+  .site-menu-inner {
+    opacity: 1;
   }
 }
 
@@ -770,13 +958,17 @@ p {
   font-size: var(--fs-small);
 }
 
-/* --- Reveal on scroll (fade + 8px rise, once) ----------------------------- */
+/* --- Reveal on scroll ----------------------------------------------------- */
+/* The section is the trigger + fade gate: the whole block fades in (which also
+   carries non-text things like rules and images). When JS is active, each line
+   of text ADDITIONALLY rises with a subtle spring, in a per-section stagger
+   (delays set in site.js). No JS / reduced motion -> everything just shows. */
 .reveal {
   opacity: 0;
   transform: translateY(var(--reveal-shift));
   transition:
-    opacity 0.6s var(--ease),
-    transform 0.6s var(--ease);
+    opacity 0.8s var(--ease),
+    transform 0.8s var(--ease);
   will-change: opacity, transform;
 }
 
@@ -785,12 +977,43 @@ p {
   transform: none;
 }
 
+/* JS present: the parent no longer rises (its text lines do). */
+html.reveal-ready .reveal {
+  transform: none;
+}
+html.reveal-ready .reveal .r-line {
+  transform: translateY(22px);
+  transition: transform 0.85s var(--ease-spring);
+}
+html.reveal-ready .reveal.is-visible .r-line {
+  transform: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
+  .reveal,
+  html.reveal-ready .reveal .r-line {
     opacity: 1;
     transform: none;
     transition: none;
   }
+}
+
+/* --- Lenis smooth scroll --------------------------------------------------- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 /* --- Utilities ------------------------------------------------------------ */

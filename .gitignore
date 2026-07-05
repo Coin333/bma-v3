@@ -1,0 +1,6 @@
+
+# BMA autopilot runtime (keep scripts/ledger/changelog tracked)
+.autopilot/logs/
+.autopilot/locks/
+.autopilot/state/PAUSED
+.autopilot/state/earliest-run

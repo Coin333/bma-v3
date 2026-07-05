@@ -44,7 +44,8 @@
   height: 50vh;
   overflow: hidden;
   background-color: var(--paper);
-  transition: transform 0.62s var(--ease);
+  /* Slow, deliberate ease-in-out part (the original intro's "hop" feel). */
+  transition: transform 0.95s cubic-bezier(0.8, 0, 0.3, 1);
   will-change: transform;
 }
 
@@ -88,6 +89,12 @@
   line-height: 1.08;
   letter-spacing: 0.02em;
   white-space: nowrap;
+  /* --pl-fit is measured in JS and scales the long phrase down so it never
+     runs past the viewport edges (which the panels clip). It settles back to
+     1 when the phrase resolves to "BMA". No transition here: the initial fit
+     must be instant, not animated. */
+  transform: scale(var(--pl-fit, 1));
+  transform-origin: center center;
 }
 
 /* A word is the rise-mask: its content starts below the mask and slides up. */
@@ -99,7 +106,7 @@
 /* Word gaps start open ("BLUE MODERN ADVISORY") and tighten into "BMA". */
 .bma-pl-word:not(:last-child) {
   margin-inline-end: 0.34em;
-  transition: margin-inline-end 0.55s var(--ease);
+  transition: margin-inline-end 0.7s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 .bma-pl-rise {
@@ -117,11 +124,15 @@
 .bma-pl-rest {
   display: inline-block;
   overflow: hidden;
-  max-width: 8ch;
+  /* Each trailing run's exact width is measured in JS and written to
+     --rest-w, so every run collapses from its own size, in sync, with no
+     max-width dead-time (what made the shorten feel clunky). 12ch is only a
+     no-JS fallback ceiling that still clears the widest run ("DVISORY"). */
+  max-width: var(--rest-w, 12ch);
   opacity: 1;
   transition:
-    max-width 0.55s var(--ease),
-    opacity 0.4s var(--ease);
+    max-width 0.7s cubic-bezier(0.65, 0, 0.35, 1),
+    opacity 0.55s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 /* --- Corner tags (IBM Plex Mono, 12px, uppercase, tracked) ---------------- */
@@ -213,6 +224,11 @@
 .bma-preloader.is-resolved .bma-pl-word:not(:last-child) {
   margin-inline-end: 0.07em;
 }
+/* The fit-scaled phrase settles up to full size as it locks into "BMA". */
+.bma-preloader.is-resolved .bma-pl-mark {
+  transform: scale(1);
+  transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+}
 
 /* --- State: 3) tags clear ------------------------------------------------- */
 .bma-preloader.is-lifting .bma-pl-tag {
@@ -228,3 +244,7 @@
 .bma-preloader.is-lifting .bma-pl-panel--bottom {
   transform: translateY(100%);
 }
+
+/* The page's content reveal (text rising in) is handled by the scroll-reveal
+   system in base.css + site.js, triggered as the panels part (bma:intro-reveal
+   event), so the page opens with motion instead of a static reveal. */
